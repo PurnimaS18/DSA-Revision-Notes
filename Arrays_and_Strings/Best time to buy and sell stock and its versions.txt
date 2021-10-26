@@ -1,0 +1,264 @@
+
+VERSION - 1
+
+Q - You are given an array prices where prices[i] is the price of a given stock on the ith day.
+
+You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.
+
+Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
+
+Eg - 
+
+Input: prices = [7,1,5,3,6,4]
+Output: 5
+Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.
+Note that buying on day 2 and selling on day 1 is not allowed because you must buy before you sell.
+
+SOLUTION 
+
+int maxProfit(vector<int>& prices) {
+    int maxPro = 0;
+    int minPrice = INT_MAX;
+    for(int i = 0; i < prices.size(); i++){
+        minPrice = min(minPrice, prices[i]);//to find min value among all the given values
+        maxPro = max(maxPro, prices[i] - minPrice);//max profit will be difference between minPrice and checking for each new value of price
+    }
+    return maxPro;
+}
+
+Time Complexity - O(n)
+Space Complexity - O(1)
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+VERSION - 2
+
+Q - You are given an integer array prices where prices[i] is the price of a given stock on the ith day.
+
+On each day, you may decide to buy and/or sell the stock. You can only hold at most one share of the stock at any time. However, you can buy it then immediately sell it on the same day.
+
+Find and return the maximum profit you can achieve.
+
+Eg - 
+
+Input: prices = [7,1,5,3,6,4]
+Output: 7
+Explanation: Buy on day 2 (price = 1) and sell on day 3 (price = 5), profit = 5-1 = 4.
+Then buy on day 4 (price = 3) and sell on day 5 (price = 6), profit = 6-3 = 3.
+Total profit is 4 + 3 = 7.
+
+SOLUTION 
+
+int maxProfit(vector<int>& prices) {
+    int ret = 0;
+    for (int p = 1; p < prices.size(); ++p) 
+      ret += max(prices[p] - prices[p - 1], 0);  //max profit cal only be obtained by buying on one day and selling on the other day checking the condition that next value is higher than previous one.  
+    return ret;
+}
+
+Time Complexity - O(n)
+Space Complexity - O(1)
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+VERSION - 3
+
+Q - You are given an array prices where prices[i] is the price of a given stock on the ith day.
+
+Find the maximum profit you can achieve. You may complete at most two transactions.
+
+Note: You may not engage in multiple transactions simultaneously (i.e., you must sell the stock before you buy again).
+
+Eg - 
+
+Input: prices = [3,3,5,0,0,3,1,4]
+Output: 6
+Explanation: Buy on day 4 (price = 0) and sell on day 6 (price = 3), profit = 3-0 = 3.
+Then buy on day 7 (price = 1) and sell on day 8 (price = 4), profit = 4-1 = 3.
+
+SOLUTION 1
+
+//1st solution where in we traverse twice in prices to find two kind of values and store them in a kind of lookup for future use.
+int maxProfit(vector<int>& prices) {
+
+        // first traversal is to caculate maximum profit that can be obtained if the stock is sold today.We calculate this kind of value for each price of stock and store them in lookup.
+        int mpist = 0;
+        int leastsf = prices[0];
+        int lookup[prices.size()]; 
+        for(int i=0;i<prices.size();i++)
+        {
+            lookup[i] = 0;
+        }
+        for(int i = 1;i < prices.size();i++)
+        {
+            // first look for least value of stock that is present so far
+            if(prices[i] < leastsf)
+            {
+                leastsf = prices[i];
+            }
+            // then calculate the maximum profit that can be obtained if sold today and store them in lookup
+            mpist = prices[i] - leastsf;
+            if(mpist > lookup[i-1])
+            {
+                lookup[i] = mpist;
+            }
+            else
+            {
+                lookup[i] = lookup[i-1];
+            }
+        }
+
+        // second traversal is to calculate the maximum profit that can be obtained if the stock is brought today.We caculate this kind of value for each price of stock and store them in nlookup.
+        int mpibt = 0;
+        int maxat = prices[prices.size()-1];
+        int nlookup[prices.size()];
+        for(int i=0;i<prices.size();i++)
+        {
+            nlookup[i] = 0;
+        }
+        for(int i = prices.size()-2;i >= 0; i--)
+        {
+            // first calculate the maximum at today value
+            if(prices[i] > maxat)
+            {
+                maxat = prices[i];
+            }
+            // then calculate maximum profit if the stocks is brought today and store these values in nlookup
+            mpibt = maxat - prices[i];
+            if(mpibt > nlookup[i+1])
+                nlookup[i] = mpibt;
+            else
+                nlookup[i] = nlookup[i+1];
+        }
+        
+        // final ans is the maximum of the sum of both the values that are obtained and stored in lookup and nlookups
+        int ans = 0;
+        for(int i = 0;i < prices.size();i++)
+        {
+            ans = max(ans, lookup[i]+nlookup[i]);
+        }
+        return ans;
+    }
+
+Time Complexity - O(n) // twice traversing till size of prices
+Space Complexity - O(n) // maintaing lookup and nlookups
+
+SOLUTION 2
+
+int maxProfit(vector<int>& prices) {
+        int buyOne = INT_MAX;
+        int SellOne = 0;
+        int buyTwo = INT_MAX;
+        int SellTwo = 0;
+        for(int p : prices) {
+            buyOne = min(buyOne, p);
+            SellOne = max(SellOne, p - buyOne);
+            buyTwo = min(buyTwo, p - SellOne);
+            SellTwo = max(SellTwo, p - buyTwo);
+        }
+        return SellTwo;
+}
+
+Time Complexity - O(n)
+Space Complexity - O(1)
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+VERSION - 4
+
+Q - You are given an integer array prices where prices[i] is the price of a given stock on the ith day, and an integer k.
+
+Find the maximum profit you can achieve. You may complete at most k transactions.
+
+Note: You may not engage in multiple transactions simultaneously (i.e., you must sell the stock before you buy again).
+
+Eg - 
+
+Input: k = 2, prices = [2,4,1]
+Output: 2
+Explanation: Buy on day 1 (price = 2) and sell on day 2 (price = 4), profit = 4-2 = 2.
+
+SOLUTION
+
+int maxProfit(vector<int>& p, int res = 0) {
+  for (int i = 1; i < p.size(); ++i) res += max(0, p[i] - p[i - 1]);
+  return res;
+}
+int maxProfit(int k, vector<int>& prices) {
+  if (k >= prices.size() / 2) return maxProfit(prices);
+  vector<int> buys(k + 1, INT_MIN), sells(k + 1, 0);
+  for (auto p : prices)
+    for (auto i = 1; i <= k; ++i) {
+      buys[i] = max(buys[i], sells[i - 1] - p);
+      sells[i] = max(sells[i], buys[i] + p);  
+    }
+  return sells[k];
+}
+
+Time Complexity - O(nk)
+Space Complexity - O(k)
+
+
+VERSION - 5
+
+Q - You are given an array prices where prices[i] is the price of a given stock on the ith day.
+
+Find the maximum profit you can achieve. You may complete as many transactions as you like (i.e., buy one and sell one share of the stock multiple times) with the following restrictions:
+
+After you sell your stock, you cannot buy stock on the next day (i.e., cooldown one day).
+Note: You may not engage in multiple transactions simultaneously (i.e., you must sell the stock before you buy again).
+
+Eg - 
+Input: prices = [1,2,3,0,2]
+Output: 3
+Explanation: transactions = [buy, sell, cooldown, buy, sell]
+
+SOLUTION
+// in this we will be maintaining three states bought, sold and rest. 
+int maxProfit(vector<int>& prices) {
+    int sold = 0, hold = INT_MIN, rest = 0;
+    for (int i=0; i<prices.size(); ++i)
+    {
+        int prvSold = sold;
+        sold = hold + prices[i];
+        hold = max(hold, rest-prices[i]);
+        rest = max(rest, prvSold);
+    }
+    return max(sold, rest);// ans would be maximum of the sold and rest state.
+}
+
+Time Complexity - O(n)
+Space Complexity - O(1)
+
+VERSION - 6
+
+Q - You are given an array prices where prices[i] is the price of a given stock on the ith day, and an integer fee representing a transaction fee.
+
+Find the maximum profit you can achieve. You may complete as many transactions as you like, but you need to pay the transaction fee for each transaction.
+
+Note: You may not engage in multiple transactions simultaneously (i.e., you must sell the stock before you buy again).
+
+Eg - 
+Input: prices = [1,3,2,8,4,9], fee = 2
+Output: 8
+Explanation: The maximum profit can be achieved by:
+- Buying at prices[0] = 1
+- Selling at prices[3] = 8
+- Buying at prices[4] = 4
+- Selling at prices[5] = 9
+The total profit is ((8 - 1) - 2) + ((9 - 4) - 2) = 8.
+
+SOLUTION
+
+int maxProfit(vector<int>& prices, int fee) {
+        int s0 = 0, s1 = INT_MIN; // s0 - profit having no stock, s1 - profit having 1 stock
+        for(int p:prices) {
+            int tmp = s0;
+            s0 = max(s0, s1+p);
+            s1 = max(s1, tmp-p-fee);
+        }
+        return s0;
+}
+
+Time Complexity - O(n)
+Space Complexity - O(1)
