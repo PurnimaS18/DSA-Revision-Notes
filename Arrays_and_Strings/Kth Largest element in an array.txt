@@ -1,0 +1,25 @@
+Q - Given an integer array nums and an integer k, return the kth largest element in the array.
+
+Note that it is the kth largest element in the sorted order, not the kth distinct element.
+
+Eg -
+Input: nums = [3,2,1,5,6,4], k = 2
+Output: 5
+
+SOLUTION
+
+int findKthLargest(vector<int>& nums, int k) {
+        priority_queue<int, vector<int>, greater<int>> pq; // create a min heap
+        for (int num : nums) {
+            pq.push(num);// push the values in the queue
+            //cout << pq.top() <<"\n";
+            
+            if (pq.size() > k) {// until the queue contains number of elements greater than k, pop the elements
+                pq.pop();
+            }
+        }
+        return pq.top();// then return the top of the queue
+}
+
+Time Complexity - O(n)
+Space Complexity - O(1)
