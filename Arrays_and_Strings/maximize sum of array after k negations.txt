@@ -1,0 +1,26 @@
+Q - Given an integer array nums and an integer k, modify the array in the following way:
+
+choose an index i and replace nums[i] with -nums[i].
+You should apply this process exactly k times. You may choose the same index i multiple times.
+
+Return the largest possible sum of the array after modifying it in this way.
+
+Eg -
+Input: nums = [4,2,3], k = 1
+Output: 5
+Explanation: Choose index 1 and nums becomes [4,-2,3].
+
+SOLUTION
+
+int largestSumAfterKNegations(vector<int>& A, int K) {
+        sort(A.begin(), A.end());// sort the array in ascending order so as to get the values with greater value first
+        for (int i = 0; K > 0 && i < A.size() && A[i] < 0; ++i, --K)
+            A[i] = -A[i];// make the negative values positive in a series way with greatest value being made positive first 
+        return accumulate(A.begin(), A.end(), 0) - (K%2) * *min_element(A.begin(), A.end()) * 2;
+    }
+    
+    // (K%2) to check for the number of times the value has to be rounded off
+    // then choosing the minimum element from the array and subtracting it from the sum
+
+Time Complexity - O(n)
+Space Complexity - O(1)
