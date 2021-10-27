@@ -1,0 +1,29 @@
+Q - There are n cities connected by some number of flights. You are given an array flights where flights[i] = [fromi, toi, pricei] indicates that there is a flight from city fromi to city toi with cost pricei.
+
+You are also given three integers src, dst, and k, return the cheapest price from src to dst with at most k stops. If there is no such route, return -1.
+
+Eg - 
+
+Input: n = 3, flights = [[0,1,100],[1,2,100],[0,2,500]], src = 0, dst = 2, k = 1
+Output: 200
+Explanation: 
+The cheapest price from city 0 to city 2 with at most 1 stop costs 200, as marked red in the picture.
+
+SOLUTION
+
+int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+         
+        vector<int> c(n, 1e8);// creating a vector of size n (number of cities) and initialising them with 1e8
+        c[src] = 0;// initialising the source value as 0
+        
+        for(int z=0; z<=k; z++){// looping through one more than the number of stops   
+            vector<int> C(c);// creating a vector C and copying the contents of vector c in C
+            for(auto e: flights)// iterating through flights vector and checking for minimum costs
+                C[e[1]] = min(C[e[1]], c[e[0]] + e[2]);
+            c = C;// now copying the values of C in c
+        }
+        return c[dst] == 1e8 ? -1 : c[dst];// returning the minimum cost 
+    }
+
+Time Complexity - O(nk)
+Space Complexity - O(n)
