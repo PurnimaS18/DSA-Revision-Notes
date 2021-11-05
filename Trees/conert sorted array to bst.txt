@@ -1,0 +1,28 @@
+Q - Given an integer array nums where the elements are sorted in ascending order, convert it to a height-balanced binary search tree.
+
+A height-balanced binary tree is a binary tree in which the depth of the two subtrees of every node never differs by more than one.
+
+Eg- 
+Input: nums = [-10,-3,0,5,9]
+Output: [0,-3,9,-10,null,5]
+Explanation: [0,-10,5,null,-3,null,9] is also accepted
+
+SOLUTION
+
+TreeNode* sortedArrayToBST(vector<int>& nums) {
+        return helper(nums, 0, nums.size()-1); // calling helper function recursively
+    }
+    TreeNode* helper(vector<int>& nums, int low,int high){
+        if(low<=high){
+            int mid = low + (high-low)/2;
+            TreeNode* root = new TreeNode(nums[mid]);// creating new node in mid
+            // then calling for left of root and right of root
+            root->left = helper(nums, low, mid-1);
+            root->right = helper(nums, mid+1, high);
+            return root;
+        }
+        return NULL;
+    }
+
+Time Complexity - O(n)
+Space Complexity - O(log n)
