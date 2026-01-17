@@ -2,7 +2,7 @@
 
 Sites where I practice DSA -->
 
-(i) Leetcode -->  https://leetcode.com/ps1805/
+(i) Leetcode -->  https://leetcode.com/u/Purnima1805/
 
 (ii) GFG --> https://auth.geeksforgeeks.org/user/shuklapurnima123/practice/
 
